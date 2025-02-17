@@ -1,0 +1,14 @@
+/home/bruno/Desktop/Projetos/TaskTracker/bin/Debug/net9.0/TaskTracker
+/home/bruno/Desktop/Projetos/TaskTracker/bin/Debug/net9.0/TaskTracker.deps.json
+/home/bruno/Desktop/Projetos/TaskTracker/bin/Debug/net9.0/TaskTracker.runtimeconfig.json
+/home/bruno/Desktop/Projetos/TaskTracker/bin/Debug/net9.0/TaskTracker.dll
+/home/bruno/Desktop/Projetos/TaskTracker/bin/Debug/net9.0/TaskTracker.pdb
+/home/bruno/Desktop/Projetos/TaskTracker/obj/Debug/net9.0/TaskTracker.GeneratedMSBuildEditorConfig.editorconfig
+/home/bruno/Desktop/Projetos/TaskTracker/obj/Debug/net9.0/TaskTracker.AssemblyInfoInputs.cache
+/home/bruno/Desktop/Projetos/TaskTracker/obj/Debug/net9.0/TaskTracker.AssemblyInfo.cs
+/home/bruno/Desktop/Projetos/TaskTracker/obj/Debug/net9.0/TaskTracker.csproj.CoreCompileInputs.cache
+/home/bruno/Desktop/Projetos/TaskTracker/obj/Debug/net9.0/TaskTracker.dll
+/home/bruno/Desktop/Projetos/TaskTracker/obj/Debug/net9.0/refint/TaskTracker.dll
+/home/bruno/Desktop/Projetos/TaskTracker/obj/Debug/net9.0/TaskTracker.pdb
+/home/bruno/Desktop/Projetos/TaskTracker/obj/Debug/net9.0/TaskTracker.genruntimeconfig.cache
+/home/bruno/Desktop/Projetos/TaskTracker/obj/Debug/net9.0/ref/TaskTracker.dll
