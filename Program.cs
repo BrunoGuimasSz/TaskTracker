@@ -1,96 +1,208 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text.Json;
+﻿using System.Text.Json;
+using Cocona;
+
+var app = CoconaApp.Create();
+
+app.AddCommand("add", ([Argument] string description) =>
+    TaskTracker.Program.AddTask(description))
+    .WithDescription("Creates a new task");
+app.AddCommand("remove", ([Argument] string id) =>
+    TaskTracker.Program.DeleteTask(id))
+    .WithDescription("Remove a task");
+app.AddCommand("list", ([Option('s', Description = "Only show tasks with a specific status")] string? status) =>
+    TaskTracker.Program.ListTask(status))
+    .WithDescription("List all tasks");
+app.AddCommand("mark", ([Argument] string id, [Argument] string status) =>
+    TaskTracker.Program.MarkTask(id, status))
+    .WithDescription("Changes the status of a task");
+app.AddCommand("update", ([Argument] string id, [Argument] string description) =>
+    TaskTracker.Program.UpdateTask(id, description))
+    .WithDescription("Changes the description of a task");
+app.Run();
 
 namespace TaskTracker
 {
+    class Constants
+    {  
+        public const string DEFAULT_STATUS = "todo";
+        public const string DEFAULT_UPDATED_AT_DATE_TIME = "never";
+        public const string TASK_LIST_SAVE_PATH = "TaskListSave.json";
+    }
+
     class Task
     {
-        public string description { get; set; }
-        public string status { get; set; }
-        public int id { get; set; }
+        public string Description { get; set; }
+        public string Status { get; set; }
+        public int Id { get; set; }
+        public string CreatedAT { get; set; }
+        public string UpdatedAt { get; set; }
 
-        public Task(string description, string status, int id)
+        public Task(string description, string status, int id, string createdAt, string updatedAt)
         {
-            this.description = description;
-            this.status = status;
-            this.id = id;
+            this.Description = description;
+            this.Status = status;
+            this.Id = id;
+            this.CreatedAT = createdAt;
+            this.UpdatedAt = updatedAt;
         }
     }
+
     class Program
     {
-        static void Main()
+        public static void AddTask(string description)
         {
-            Console.WriteLine("O que você deseja?");
-            Console.WriteLine("1 - Criar tarefa\n2 - Deletar tarefa\n3 - Atualizar tarefas\n4 - Listar tarefas\n5 - Sair");
-
-            int option = Convert.ToInt32(Console.ReadLine());
-
-            switch (option)
+            if(description.Length > 30)
             {
-                case 1:
-                    AddTask(false);
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    break;
-                case 4:
-                    // ListTask();
-                    LoadTask();
-                    break;
-                case 5:
-                    return;
-                default:
-                    Console.WriteLine("Opção inválida");
-                    break;
+                throw new Exception("Error: Description should have a maximum of 30 characters");
             }
-        }
-        static void AddTask(bool returnTaskList)
-        {
-            const string defaultStatus = "todo";
+
+            List<Task> TaskList = LoadTask();
+            int id = GenerateTaskId(TaskList);
+            string createdAt = DateTime.Now.ToString();
+            TaskList.Add(new Task(description, Constants.DEFAULT_STATUS, id, createdAt, Constants.DEFAULT_UPDATED_AT_DATE_TIME));
 
             Console.Clear();
-            Console.WriteLine("Qual a descrição da tarefa?");
-            string description = Console.ReadLine();
+            Console.WriteLine($"Task {description} created with success! Id {id}");
 
-            List<Task> TaskList = new List<Task>();
-            int id = TaskList.Count + 1;
-            TaskList.Add(new Task(description, defaultStatus, id));
-
-            Console.WriteLine("\nDigite qualquer tecla para continuar");
-            Console.ReadKey();
-            
             SaveTask(TaskList);
         }
-        // static void ListTask()
-        // {
-        //     List<Task> taskList = LoadTask();
 
-        //     Console.Clear();
-        //     Console.WriteLine("ID | DESCRIÇÃO | STATUS");
-        //     foreach (var task in taskList)
-        //     {
-        //         Console.WriteLine(task.Id + " - \"" + task.description + "\" - " + task.status);
-        //     }
-
-        //     Console.WriteLine("\nDigite qualquer tecla para continuar");
-        //     Console.ReadKey();
-        //     Main();
-        // }
-        static void LoadTask()
+        public static void DeleteTask(string idToRemove)
         {
-            var jsonFile = File.ReadAllText("TaskListSave");
-            var jsonList = JsonSerializer.Deserialize<Task>(jsonFile);
-            Console.WriteLine(jsonFile);
+            List<Task> TaskList = LoadTask();
+            int taskIndex = GetTaskIndex(Convert.ToInt32(idToRemove), TaskList);
+            if(taskIndex == -1)
+            {
+                ErrorNotFound();
+            }
+            string taskDescription = TaskList[taskIndex].Description;
+            TaskList.RemoveAt(taskIndex);
+
+            Console.Clear();
+            Console.WriteLine($"Tarefa \"{taskDescription}\" deletada com sucesso!");
+
+            SaveTask(TaskList);
         }
+
+        public static List<Task> LoadTask()
+        {
+            if(!File.Exists(Constants.TASK_LIST_SAVE_PATH))
+            {
+                File.WriteAllText(Constants.TASK_LIST_SAVE_PATH, null);
+                return new List<Task>();
+            }
+
+            var jsonFile = File.ReadAllText(Constants.TASK_LIST_SAVE_PATH);
+
+            if(jsonFile == "" || jsonFile == "[]")
+            {
+                return new List<Task>();
+            }
+
+            var jsonFilePath = File.ReadAllText(Constants.TASK_LIST_SAVE_PATH);
+            return JsonSerializer.Deserialize<List<Task>>(jsonFilePath) ?? new List<Task>();
+        }
+
         static void SaveTask(List<Task> TaskList)
         {
             var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
             var jsonList = JsonSerializer.Serialize(TaskList, jsonOptions);
-            LoadTask();
-            File.WriteAllText("TaskListSave", jsonList);
+
+            File.WriteAllText(Constants.TASK_LIST_SAVE_PATH, jsonList);
+        }
+
+        public static void ListTask(string status)
+        {
+            List<Task> TaskList = LoadTask();
+
+            var jsonFile = File.ReadAllText("TaskListSave.json");
+
+            if(!File.Exists(Constants.TASK_LIST_SAVE_PATH) || jsonFile == "" || jsonFile == "[]")
+            {
+                Console.Clear();
+                Console.WriteLine("No tasks found");
+                return;
+            }
+
+            Console.Clear();
+            Console.WriteLine(" ID  |           DESCRIPTION           |    STATUS   |      CREATED AT     |      UPDATED AT");
+            foreach (var task in TaskList)
+            {
+                if(status != null && task.Status == status)
+                {
+                    Console.WriteLine($" {task.Id, -6}{task.Description, -33}{task.Status, -13}{task.CreatedAT, -22}{task.UpdatedAt, -22}");
+                }
+                else if(status == null)
+                {
+                    Console.WriteLine($" {task.Id, -6}{task.Description, -34}{task.Status, -14}{task.CreatedAT, -22}{task.UpdatedAt, -22}");
+                }
+            }
+        }
+
+        public static void MarkTask(string id, string status)
+        {
+            status = status.ToLower();
+            if(status != "todo" && status != "in-progress" && status != "done")
+            {
+                Console.Clear();
+                Console.WriteLine("Error: Status should be \"todo\", \"in-progress\" or \"done\"");
+                return;
+            }
+
+            List<Task> TaskList = LoadTask();
+            int taskIndex = GetTaskIndex(Convert.ToInt32(id), TaskList);
+            if(taskIndex == -1)
+            {
+                ErrorNotFound();
+            }
+            TaskList[taskIndex].Status = status;
+
+            DateTime updatedAt = DateTime.Now;
+            TaskList[taskIndex].UpdatedAt = updatedAt.ToString();
+
+            Console.Clear();
+            Console.WriteLine($"Task {id} marked as {status}");
+
+            SaveTask(TaskList);
+        }
+
+        public static void UpdateTask(string id, string description)
+        {
+            List<Task> TaskList = LoadTask();
+            int taskIndex = GetTaskIndex(Convert.ToInt32(id), TaskList);
+            if(taskIndex == -1)
+            {
+                ErrorNotFound();
+            }
+
+            string oldDescription = TaskList[taskIndex].Description;
+
+            TaskList[taskIndex].Description = description;
+            DateTime updatedAt = DateTime.Now;
+            TaskList[taskIndex].UpdatedAt = updatedAt.ToString();
+
+            Console.Clear();
+            Console.WriteLine($"Task {id} changed from \"{oldDescription}\" to \"{TaskList[taskIndex].Description}\"!");
+
+            SaveTask(TaskList);
+        }
+
+        static int GetTaskIndex(int id, List<Task> TaskList)
+        {
+            return TaskList.FindIndex(task => task.Id == id);
+        }
+
+        static int GenerateTaskId(List<Task> TaskList)
+        {
+            Random random = new Random();
+
+            int id = random.Next(1, 1000);
+            return id;
+        }
+
+        static void ErrorNotFound()
+        {
+            throw new Exception("Error 404: No tasks found");
         }
     }
 }
