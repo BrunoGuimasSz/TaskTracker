@@ -19,7 +19,7 @@ TaskTracker has the following features:
 
 Installation can be simply done by cloning the repository:
 ```
-$ git clonehttps://github.com/BrunoGuimasSz/TaskTracker.git
+$ git clone https://github.com/BrunoGuimasSz/TaskTracker.git
 ```
 
 ## Usage
