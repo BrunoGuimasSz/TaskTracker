@@ -27,33 +27,37 @@ $ git clonehttps://github.com/BrunoGuimasSz/TaskTracker.git
 - **Add task** 
 ```
 $ dotnet run add "buy groceries"
-Task buy groceries created with success! Id 198
+Task buy groceries created with success! Id 1
 ```
 - **Update task**
 ```
-$ dotnet run update 198 "buy groceries and fruits"
-Task 607 changed from "Buy groceries" to "buy groceries and fruits"!
+$ dotnet run update 1 "buy groceries and fruits"
+Task 1 changed from "Buy groceries" to "buy groceries and fruits"!
 ```
 - **Mark task**
 ```
-$ dotnet run mark 198 done
-Task 198 marked as done
+$ dotnet run mark-done 1
+Task 1 marked as done
+$ dotnet run mark-in-progress 1
+Task 1 marked as in-progress
+$ dotnet run mark-todo 1
+Task 1 marked as todo
 ```
 - **List tasks**
 ```
 $ dotnet run list
 ID  |           DESCRIPTION           |    STATUS   |      CREATED AT     |      UPDATED AT    
-607   buy groceries and fruits          done          26/02/2025 10:48:07   26/02/2025 10:50:43
-283   Fill up the car                   todo          26/02/2025 10:54:42   never              
-792   Fix bathroom toilet               in-progress   26/02/2025 11:01:46   26/02/2025 11:02:28
-115   Visit mom                         todo          26/02/2025 11:01:56   never              
+1     buy groceries and fruits          done          26/02/2025 10:48:07   26/02/2025 10:50:43
+2     Fill up the car                   todo          26/02/2025 10:54:42   never              
+3     Fix bathroom toilet               in-progress   26/02/2025 11:01:46   26/02/2025 11:02:28
+4     Visit mom                         todo          26/02/2025 11:01:56   never              
 dotnet run list todo
 ID  |           DESCRIPTION           |    STATUS   |      CREATED AT     |      UPDATED AT     
-283   Fill up the car                  todo         26/02/2025 10:54:42   never                 
-115   Visit mom                        todo         26/02/2025 11:01:56   never                 
+2     Fill up the car                  todo         26/02/2025 10:54:42     never                 
+4     Visit mom                        todo         26/02/2025 11:01:56     never                 
 ``` 
 - **Remove task**
 ```
-$ dotnet run remove 283
-Task 283 removed with success!
+$ dotnet run remove 2
+Task 2 removed with success!
 ```
