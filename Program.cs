@@ -6,15 +6,27 @@ var app = CoconaApp.Create();
 app.AddCommand("add", ([Argument] string description) =>
     TaskTracker.Program.AddTask(description))
     .WithDescription("Creates a new task");
+
 app.AddCommand("remove", ([Argument] string id) =>
     TaskTracker.Program.DeleteTask(id))
     .WithDescription("Remove a task");
+
 app.AddCommand("list", ([Option('s', Description = "Only show tasks with a specific status")] string? status) =>
     TaskTracker.Program.ListTask(status))
     .WithDescription("List all tasks");
-app.AddCommand("mark", ([Argument] string id, [Argument] string status) =>
-    TaskTracker.Program.MarkTask(id, status))
+
+app.AddCommand("mark-todo", ([Argument] string id) =>
+    TaskTracker.Program.MarkTask(id, "todo"))
     .WithDescription("Changes the status of a task");
+
+app.AddCommand("mark-in-progress", ([Argument] string id) =>
+    TaskTracker.Program.MarkTask(id, "in-progress"))
+    .WithDescription("Changes the status of a task");
+
+app.AddCommand("mark-done", ([Argument] string id) =>
+    TaskTracker.Program.MarkTask(id, "done"))
+    .WithDescription("Changes the status of a task");
+
 app.AddCommand("update", ([Argument] string id, [Argument] string description) =>
     TaskTracker.Program.UpdateTask(id, description))
     .WithDescription("Changes the description of a task");
@@ -23,7 +35,7 @@ app.Run();
 namespace TaskTracker
 {
     class Constants
-    {  
+    {
         public const string DEFAULT_STATUS = "todo";
         public const string DEFAULT_UPDATED_AT_DATE_TIME = "never";
         public const string TASK_LIST_SAVE_PATH = "TaskListSave.json";
@@ -53,7 +65,7 @@ namespace TaskTracker
         {
             if(description.Length > 30)
             {
-                throw new Exception("Error: Description should have a maximum of 30 characters");
+                Console.WriteLine("Error: Description should have a maximum of 30 characters");
             }
 
             List<Task> TaskList = LoadTask();
@@ -141,14 +153,6 @@ namespace TaskTracker
 
         public static void MarkTask(string id, string status)
         {
-            status = status.ToLower();
-            if(status != "todo" && status != "in-progress" && status != "done")
-            {
-                Console.Clear();
-                Console.WriteLine("Error: Status should be \"todo\", \"in-progress\" or \"done\"");
-                return;
-            }
-
             List<Task> TaskList = LoadTask();
             int taskIndex = GetTaskIndex(Convert.ToInt32(id), TaskList);
             if(taskIndex == -1)
@@ -172,6 +176,7 @@ namespace TaskTracker
             int taskIndex = GetTaskIndex(Convert.ToInt32(id), TaskList);
             if(taskIndex == -1)
             {
+                Console.WriteLine("Bater punheta");
                 ErrorNotFound();
             }
 
@@ -194,15 +199,23 @@ namespace TaskTracker
 
         static int GenerateTaskId(List<Task> TaskList)
         {
-            Random random = new Random();
+            int maxId = 0;
 
-            int id = random.Next(1, 1000);
-            return id;
+            foreach(var task in TaskList)
+            {
+                if(task.Id > maxId)
+                {
+                    maxId = task.Id;
+                }
+            }
+
+            return maxId + 1;
         }
 
         static void ErrorNotFound()
         {
-            throw new Exception("Error 404: No tasks found");
+            Console.Clear();
+            Console.WriteLine("Error 404: Task not found");
         }
     }
 }
