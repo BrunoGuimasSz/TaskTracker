@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Cocona;
 
 var app = CoconaApp.Create();
@@ -65,7 +65,9 @@ namespace TaskTracker
         {
             if(description.Length > 30)
             {
+                Console.Clear();
                 Console.WriteLine("Error: Description should have a maximum of 30 characters");
+                return;
             }
 
             List<Task> TaskList = LoadTask();
@@ -85,7 +87,9 @@ namespace TaskTracker
             int taskIndex = GetTaskIndex(Convert.ToInt32(idToRemove), TaskList);
             if(taskIndex == -1)
             {
-                ErrorNotFound();
+                Console.Clear();
+                Console.WriteLine("Error: Task not found");
+                return;
             }
             string taskDescription = TaskList[taskIndex].Description;
             TaskList.RemoveAt(taskIndex);
@@ -157,7 +161,9 @@ namespace TaskTracker
             int taskIndex = GetTaskIndex(Convert.ToInt32(id), TaskList);
             if(taskIndex == -1)
             {
-                ErrorNotFound();
+                Console.Clear();
+                Console.WriteLine("Error: Task not found");
+                return;
             }
             TaskList[taskIndex].Status = status;
 
@@ -176,8 +182,9 @@ namespace TaskTracker
             int taskIndex = GetTaskIndex(Convert.ToInt32(id), TaskList);
             if(taskIndex == -1)
             {
-                Console.WriteLine("Bater punheta");
-                ErrorNotFound();
+                Console.Clear();
+                Console.WriteLine("Error: Task not found");
+                return;
             }
 
             string oldDescription = TaskList[taskIndex].Description;
@@ -210,12 +217,6 @@ namespace TaskTracker
             }
 
             return maxId + 1;
-        }
-
-        static void ErrorNotFound()
-        {
-            Console.Clear();
-            Console.WriteLine("Error 404: Task not found");
         }
     }
 }
