@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Cocona;
+using ConsoleTables;
 
 var app = CoconaApp.Create();
 
@@ -46,7 +47,7 @@ namespace TaskTracker
         public string Description { get; set; }
         public string Status { get; set; }
         public int Id { get; set; }
-        public string CreatedAT { get; set; }
+        public string CreatedAt { get; set; }
         public string UpdatedAt { get; set; }
 
         public Task(string description, string status, int id, string createdAt, string updatedAt)
@@ -54,7 +55,7 @@ namespace TaskTracker
             this.Description = description;
             this.Status = status;
             this.Id = id;
-            this.CreatedAT = createdAt;
+            this.CreatedAt = createdAt;
             this.UpdatedAt = updatedAt;
         }
     }
@@ -63,10 +64,10 @@ namespace TaskTracker
     {
         public static void AddTask(string description)
         {
-            if(description.Length > 30)
+            if(description.Length > 80)
             {
                 Console.Clear();
-                Console.WriteLine("Error: Description should have a maximum of 30 characters");
+                Console.WriteLine("Error: Description should have a maximum of 80 characters");
                 return;
             }
 
@@ -95,7 +96,7 @@ namespace TaskTracker
             TaskList.RemoveAt(taskIndex);
 
             Console.Clear();
-            Console.WriteLine($"Tarefa \"{taskDescription}\" deletada com sucesso!");
+            Console.WriteLine($"Task\"{taskDescription}\" deleted with sucess!");
 
             SaveTask(TaskList);
         }
@@ -141,18 +142,25 @@ namespace TaskTracker
             }
 
             Console.Clear();
-            Console.WriteLine(" ID  |           DESCRIPTION           |    STATUS   |      CREATED AT     |      UPDATED AT");
+            var table = new ConsoleTable("Id", "Description", "Status", "Created at", "Updated at");
             foreach (var task in TaskList)
             {
                 if(status != null && task.Status == status)
                 {
-                    Console.WriteLine($" {task.Id, -6}{task.Description, -33}{task.Status, -13}{task.CreatedAT, -22}{task.UpdatedAt, -22}");
+                    table.AddRow(task.Id, task.Description, task.Status, task.CreatedAt, task.UpdatedAt);
                 }
                 else if(status == null)
                 {
-                    Console.WriteLine($" {task.Id, -6}{task.Description, -34}{task.Status, -14}{task.CreatedAT, -22}{task.UpdatedAt, -22}");
+                    table.AddRow(task.Id, task.Description, task.Status, task.CreatedAt, task.UpdatedAt);
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("Error: Unknown status");
+                    return;
                 }
             }
+                    table.Write();
         }
 
         public static void MarkTask(string id, string status)
