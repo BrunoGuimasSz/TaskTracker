@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/run/media/bruno/Bruno/Pessoal/Projetos/TaskTracker/TaskTracker.csproj": {}
+    "/home/bruno/TaskTracker/TaskTracker.csproj": {}
   },
   "projects": {
-    "/run/media/bruno/Bruno/Pessoal/Projetos/TaskTracker/TaskTracker.csproj": {
+    "/home/bruno/TaskTracker/TaskTracker.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/run/media/bruno/Bruno/Pessoal/Projetos/TaskTracker/TaskTracker.csproj",
+        "projectUniqueName": "/home/bruno/TaskTracker/TaskTracker.csproj",
         "projectName": "TaskTracker",
-        "projectPath": "/run/media/bruno/Bruno/Pessoal/Projetos/TaskTracker/TaskTracker.csproj",
+        "projectPath": "/home/bruno/TaskTracker/TaskTracker.csproj",
         "packagesPath": "/home/bruno/.nuget/packages/",
-        "outputPath": "/run/media/bruno/Bruno/Pessoal/Projetos/TaskTracker/obj/",
+        "outputPath": "/home/bruno/TaskTracker/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/bruno/.nuget/NuGet/NuGet.Config"
@@ -48,9 +48,9 @@
               "target": "Package",
               "version": "[2.2.0, )"
             },
-            "Cocona.Lite": {
+            "ConsoleTables": {
               "target": "Package",
-              "version": "[2.2.0, )"
+              "version": "[2.4.2, )"
             }
           },
           "imports": [

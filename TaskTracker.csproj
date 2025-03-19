@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Cocona" Version="2.2.0" />
-    <PackageReference Include="Cocona.Lite" Version="2.2.0" />
+    <PackageReference Include="ConsoleTables" Version="2.4.2" />
   </ItemGroup>
 
 </Project>

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.Json;
 using Cocona;
 using ConsoleTables;
@@ -71,6 +72,8 @@ namespace TaskTracker
                 return;
             }
 
+            description = description.Replace("\n", "");
+
             List<Task> TaskList = LoadTask();
             int id = GenerateTaskId(TaskList);
             string createdAt = DateTime.Now.ToString();
@@ -96,7 +99,7 @@ namespace TaskTracker
             TaskList.RemoveAt(taskIndex);
 
             Console.Clear();
-            Console.WriteLine($"Task\"{taskDescription}\" deleted with sucess!");
+            Console.WriteLine($"Task \"{taskDescription}\" deleted with sucess!");
 
             SaveTask(TaskList);
         }
@@ -112,9 +115,7 @@ namespace TaskTracker
             var jsonFile = File.ReadAllText(Constants.TASK_LIST_SAVE_PATH);
 
             if(jsonFile == "" || jsonFile == "[]")
-            {
                 return new List<Task>();
-            }
 
             var jsonFilePath = File.ReadAllText(Constants.TASK_LIST_SAVE_PATH);
             return JsonSerializer.Deserialize<List<Task>>(jsonFilePath) ?? new List<Task>();
@@ -130,6 +131,8 @@ namespace TaskTracker
 
         public static void ListTask(string status)
         {
+            HashSet<string> statusList = new HashSet<string> { "todo", "in-progress", "done"};
+
             List<Task> TaskList = LoadTask();
 
             var jsonFile = File.ReadAllText("TaskListSave.json");
@@ -140,25 +143,19 @@ namespace TaskTracker
                 Console.WriteLine("No tasks found");
                 return;
             }
+            if(!statusList.Contains(status) && status != null)
+            {
+                Console.Clear();
+                Console.WriteLine("Error: Invalid status");
+                return;
+            }
 
             Console.Clear();
             var table = new ConsoleTable("Id", "Description", "Status", "Created at", "Updated at");
             foreach (var task in TaskList)
             {
-                if(status != null && task.Status == status)
-                {
+                if(task.Status == status || status == null)
                     table.AddRow(task.Id, task.Description, task.Status, task.CreatedAt, task.UpdatedAt);
-                }
-                else if(status == null)
-                {
-                    table.AddRow(task.Id, task.Description, task.Status, task.CreatedAt, task.UpdatedAt);
-                }
-                else
-                {
-                    Console.Clear();
-                    Console.WriteLine("Error: Unknown status");
-                    return;
-                }
             }
                     table.Write();
         }
@@ -217,12 +214,8 @@ namespace TaskTracker
             int maxId = 0;
 
             foreach(var task in TaskList)
-            {
                 if(task.Id > maxId)
-                {
                     maxId = task.Id;
-                }
-            }
 
             return maxId + 1;
         }
