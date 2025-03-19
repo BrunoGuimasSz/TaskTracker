@@ -5,6 +5,8 @@
 TaskTracker is a CLI program 100% made in C#, that allows you to manage simple daily life tasks. The program allows you to add, remove, update or mark tasks as "done", "in progress" or "to do", after all that, you can list all tasks. Managing tasks is easier than never with a nice CLI.
 This project is part of the Backend roadmap by https://roadmap.sh/projects/task-tracker.
 
+<img src="demo.gif" alt="Preview">
+
 ## Features
 
 TaskTracker has the following features:
@@ -46,15 +48,30 @@ Task 1 marked as todo
 - **List tasks**
 ```
 $ dotnet run list
-ID  |           DESCRIPTION           |    STATUS   |      CREATED AT     |      UPDATED AT    
-1     buy groceries and fruits          done          26/02/2025 10:48:07   26/02/2025 10:50:43
-2     Fill up the car                   todo          26/02/2025 10:54:42   never              
-3     Fix bathroom toilet               in-progress   26/02/2025 11:01:46   26/02/2025 11:02:28
-4     Visit mom                         todo          26/02/2025 11:01:56   never              
-dotnet run list todo
-ID  |           DESCRIPTION           |    STATUS   |      CREATED AT     |      UPDATED AT     
-2     Fill up the car                  todo         26/02/2025 10:54:42     never                 
-4     Visit mom                        todo         26/02/2025 11:01:56     never                 
+ -------------------------------------------------------------------------------------------
+ | Id | Description              | Status      | Created at          | Updated at          |
+ -------------------------------------------------------------------------------------------
+ | 1  | Buy groceries and fruits | done        | 18/03/2025 18:14:20 | 18/03/2025 18:15:41 |
+ -------------------------------------------------------------------------------------------
+ | 2  | Fill up the car          | todo        | 18/03/2025 18:14:56 | never               |
+ -------------------------------------------------------------------------------------------
+ | 3  | Fix bathroom toilet      | in-progress | 18/03/2025 18:15:08 | 18/03/2025 18:15:29 |
+ -------------------------------------------------------------------------------------------
+ | 4  | Visit mom                | todo        | 18/03/2025 18:15:18 | never               |
+ -------------------------------------------------------------------------------------------
+
+ Count: 4
+
+$ dotnet run list todo
+ --------------------------------------------------------------------
+ | Id | Description     | Status | Created at          | Updated at |
+ --------------------------------------------------------------------
+ | 2  | Fill up the car | todo   | 18/03/2025 18:14:56 | never      |
+ --------------------------------------------------------------------
+ | 4  | Visit mom       | todo   | 18/03/2025 18:15:18 | never      |
+ --------------------------------------------------------------------
+
+ Count: 2
 ``` 
 - **Remove task**
 ```
